@@ -10,7 +10,7 @@ resource "azurerm_dns_ns_record" "child" {
   name                = lower(var.child_domain_prefix)
   zone_name           = lower(var.parent_domain)
   resource_group_name = var.parent_domain_resource_group_name
-  ttl                 = 300
+  ttl                 = var.ns_record_ttl
   tags                = var.tags
 
   records = azurerm_dns_zone.child.name_servers
