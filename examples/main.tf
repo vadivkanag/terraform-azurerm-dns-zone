@@ -10,6 +10,34 @@ provider "azurerm" {
   features {}
 }
 
+module "dns_a" {
+  source = "../"
+
+  child_domain_resource_group_name  = module.resource_group_a.name
+  child_domain_prefix               = "sandbox1"
+  parent_domain_resource_group_name = "parent-dns-prod-eastus2"
+  parent_domain                     = "<a>.azure.contosso.io"
+  tags                              = module.metadata.tags
+  providers = {
+    azurerm.parent = azurerm.parent
+    azurerm.child  = azurerm.child
+  }
+}
+
+module "resource_group_a" {
+  source = "github.com/Azure-Terraform/terraform-azurerm-resource-group.git?ref=v2.1.0"
+
+  location = module.metadata.location
+  names = {
+    environment         = "sandbox"
+    location            = "uksouth"
+    market              = "uk"
+    product_name        = "poc2"
+    resource_group_type = "shared"
+  }
+  tags = module.metadata.tags
+}
+
 module "dns_b" {
   source = "../"
 
@@ -25,20 +53,6 @@ module "dns_b" {
   }
 }
 
-module "dns_a" {
-  source = "../"
-
-  child_domain_resource_group_name  = module.resource_group_a.name
-  child_domain_prefix               = "sandbox1"
-  parent_domain_resource_group_name = "parent-dns-prod-eastus2"
-  parent_domain                     = "<a>.azure.contosso.io"
-  tags                              = module.metadata.tags
-  providers = {
-    azurerm.parent = azurerm.parent
-    azurerm.child  = azurerm.child
-  }
-}
-
 module "resource_group_b" {
   source = "github.com/Azure-Terraform/terraform-azurerm-resource-group.git?ref=v2.1.0"
 
@@ -48,20 +62,6 @@ module "resource_group_b" {
     location            = "uksouth"
     market              = "uk"
     product_name        = "poc1"
-    resource_group_type = "shared"
-  }
-  tags = module.metadata.tags
-}
-
-module "resource_group_a" {
-  source = "github.com/Azure-Terraform/terraform-azurerm-resource-group.git?ref=v2.1.0"
-
-  location = module.metadata.location
-  names = {
-    environment         = "sandbox"
-    location            = "uksouth"
-    market              = "uk"
-    product_name        = "poc2"
     resource_group_type = "shared"
   }
   tags = module.metadata.tags

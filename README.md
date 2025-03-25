@@ -42,29 +42,30 @@ This module will create a Delegated DNS Zone in an existing DNS zone in Azure.
 ## Example
 
 ~~~~
-module "dns" {
-  source = "github.com/Azure-Terraform/terraform-azurerm-dns-zone.git"
-
-  child_domain_resource_group_name = "child-domain-resource-group"
-  child_domain_subscription_id     = "00000-0000-0000-0000-0000000"
-  child_domain_prefix              = "prod.west"
-
-  parent_domain_resource_group_name = "parent-domain-resource-group"
-  parent_domain_subscription_id     = "11111-1111-1111-1111-111111"
-  parent_domain                     = "example.com"
-
-  tags = { "environment" = "production"
-           "location"    = "west" }
+provider "azurerm" {
+  alias           = "parent"
+  subscription_id = var.metadata.subscription_id
+  features {}
 }
 
-output "domain" {
-  value = module.dns.name
+provider "azurerm" {
+  alias           = "child"
+  subscription_id = var.metadata.subscription_id
+  features {}
 }
 
-##### RESULT #####
-#Apply complete! Resources: 2 added, 0 changed, 0 destroyed.
-#
-#Outputs:
-#
-#domain = prod.west.example.com
+module "dns_a" {
+  source = "../"
+
+  child_domain_resource_group_name  = module.resource_group_a.name
+  child_domain_prefix               = "sandbox1"
+  parent_domain_resource_group_name = "parent-dns-prod-eastus2"
+  parent_domain                     = "<a>.azure.contosso.io"
+  tags                              = module.metadata.tags
+  providers = {
+    azurerm.parent = azurerm.parent
+    azurerm.child  = azurerm.child
+  }
+}
+
 ~~~~
