@@ -1,0 +1,54 @@
+formatter: markdown
+header-from: "_docs/header.md"
+version: ""
+
+sections:
+  hide: []
+  show: []
+
+content: |-
+  {{ .Header }}
+
+  {{ .Providers }}
+
+  {{ .Requirements }}
+
+  {{ .Inputs }}
+
+  ## Example:
+
+  ```
+  {{ include "./examples/main.tf" }}
+  ```
+
+  {{ .Footer }}
+
+output:
+  file: ../README.md
+  mode: replace
+  template: |-
+    <!-- BEGIN_TF_DOCS -->
+    {{ .Content }}
+    <!-- END_TF_DOCS -->
+
+output-values:
+  enabled: false
+  from: ""
+
+sort:
+  enabled: true
+  by: required
+
+settings:
+  anchor: true
+  color: true
+  description: false
+  default: true
+  escape: true
+  hide-empty: true
+  html: true
+  indent: 2
+  lockfile: true
+  required: true
+  sensitive: true
+  type: true
