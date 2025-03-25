@@ -12,20 +12,6 @@ module "resource_group_a" {
   tags = module.metadata.tags
 }
 
-module "resource_group_b" {
-  source = "github.com/Azure-Terraform/terraform-azurerm-resource-group.git?ref=v2.1.0"
-
-  location = module.metadata.location
-  names = {
-    environment         = "sandbox"
-    location            = "uksouth"
-    market              = "uk"
-    product_name        = "poc1"
-    resource_group_type = "shared"
-  }
-  tags = module.metadata.tags
-}
-
 module "metadata" {
   source = "github.com/Azure-Terraform/terraform-azurerm-metadata.git?ref=v1.1.0"
 
